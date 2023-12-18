@@ -104,12 +104,11 @@
 					"raw": "{\"username\":\"{{adminLogin}}\",\"password\":\"{{adminPassword}}\",\"rememberMe\":false}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/api/authenticate",
+					"raw": "{{baseUrl}}/authenticate",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
-						"api",
 						"authenticate"
 					]
 				}
@@ -124,20 +123,27 @@
 					"script": {
 						"id": "bcecacfd-cb21-45f4-b35b-9c2e1a6d682d",
 						"exec": [
-							"let currentAmountOfTasks = pm.response.json().length;",
-							"console.log(pm.response.json().length)",
+							"let jsonData = pm.response.json();",
+							"let currentAmountOfTasks = jsonData.length;",
+							"const ids = pm.environment.get(\"ids\")",
+							"console.log(currentAmountOfTasks)",
 							"",
 							"pm.environment.set('currentAmountOfTasks', currentAmountOfTasks)",
 							"pm.environment.set(\"ids\", [])",
 							"",
 							"if(currentAmountOfTasks < pm.environment.get('targetNumberOfTasks')) {",
-							"    console.log('Not enough of tasks');",
+							"    console.log('Not enough tasks');",
 							"    console.log('currentAmountOfTasks: ' + currentAmountOfTasks + ' < ' + 'targetNumberOfTasks: ' + pm.environment.get('targetNumberOfTasks'));",
 							"    postman.setNextRequest('create a task')",
 							"} else {",
 							"    console.log('Task list is full');",
-							"    console.log('currentAmountOfTasks: ' + currentAmountOfTasks + ' = ' + 'targetNumberOfTasks: ' + pm.environment.get('targetNumberOfTasks'));",
-							"    postman.setNextRequest('change task text')}"
+							"    console.log('currentAmountOfTasks: ' + currentAmountOfTasks + ' >= ' + 'targetNumberOfTasks: ' + pm.environment.get('targetNumberOfTasks'));",
+							"    postman.setNextRequest('change task text');",
+							"    pm.environment.set('lastID', jsonData[currentAmountOfTasks-1].id);",
+							"    pm.environment.set(\"ids\", ids)",
+							"    }",
+							"",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -149,7 +155,7 @@
 						"exec": [
 							"console.log('getting task list');\r",
 							"\r",
-							"pm.environment.set('targetNumberOfTasks', '105');"
+							"pm.environment.set('targetNumberOfTasks', '110');"
 						],
 						"type": "text/javascript"
 					}
@@ -201,13 +207,10 @@
 					"script": {
 						"id": "702e1346-b3c0-4eed-8b3d-231e811e1359",
 						"exec": [
+							"console.log('creating new task');",
 							"let jsonData = pm.response.json();",
-							"",
-							"pm.test(\"Your test name\", function () {",
-							"    pm.expect(jsonData.text).to.eql(\"some text\");",
-							"});",
-							"",
 							"const ids = pm.environment.get(\"ids\")",
+							"",
 							"console.log(\"jsonData.id is \" + jsonData.id)",
 							"ids.push(jsonData.id)",
 							"console.log(ids)",
@@ -327,7 +330,9 @@
 						"exec": [
 							"let arr = pm.environment.get('ids')",
 							"",
-							"arr.forEach((id)=>{",
+							"",
+							"if(arr){arr.forEach((id)=>{",
+							"    console.log('deleting task')",
 							"    pm.sendRequest(",
 							"        {url: `${pm.environment.get('baseUrl')}/tasks/${id}`,",
 							"        method: 'DELETE',",
@@ -339,7 +344,9 @@
 							"        console.log(response);",
 							"    });",
 							"})",
+							"}",
 							"",
+							"console.log('unsetting variables');",
 							"pm.environment.unset('ids');",
 							"pm.environment.unset('lastID');",
 							"pm.environment.unset('currentAmountOfTasks');",
