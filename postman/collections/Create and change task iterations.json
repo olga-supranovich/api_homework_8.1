@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "7c8c8bc6-d172-4814-9732-ba8793aedff4",
+		"_postman_id": "78a72d27-3a6c-40d3-8b99-81d8ece5c8cb",
 		"name": "Create and change task iterations",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_uid": "3431373-7c8c8bc6-d172-4814-9732-ba8793aedff4"
+		"_uid": "27247429-78a72d27-3a6c-40d3-8b99-81d8ece5c8cb"
 	},
 	"item": [
 		{
@@ -12,16 +12,26 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "317e6091-ac33-4e75-b88c-aead74bc40f9",
+						"id": "61ddbf05-7730-43e6-83ed-b3b0d5acbe04",
 						"exec": [
 							"let jsonData = pm.response.json();",
 							"pm.environment.set('token', jsonData.id_token)"
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6ca62ac3-ce4d-418b-9e1e-332194d9da1d",
+						"exec": [
+							"console.log('login');"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
-			"id": "000d5bce-1fbe-4442-bb9b-5c896289170d",
+			"id": "3431b02e-c6fc-4077-b252-7f989c0d501e",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -94,11 +104,12 @@
 					"raw": "{\"username\":\"{{adminLogin}}\",\"password\":\"{{adminPassword}}\",\"rememberMe\":false}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/authenticate",
+					"raw": "{{baseUrl}}/api/authenticate",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
+						"api",
 						"authenticate"
 					]
 				}
@@ -111,7 +122,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "235f919d-8a50-4dad-a4db-3507b6dac55a",
+						"id": "bcecacfd-cb21-45f4-b35b-9c2e1a6d682d",
 						"exec": [
 							"let currentAmountOfTasks = pm.response.json().length;",
 							"console.log(pm.response.json().length)",
@@ -120,8 +131,12 @@
 							"pm.environment.set(\"ids\", [])",
 							"",
 							"if(currentAmountOfTasks < pm.environment.get('targetNumberOfTasks')) {",
+							"    console.log('Not enough of tasks');",
+							"    console.log('currentAmountOfTasks: ' + currentAmountOfTasks + ' < ' + 'targetNumberOfTasks: ' + pm.environment.get('targetNumberOfTasks'));",
 							"    postman.setNextRequest('create a task')",
 							"} else {",
+							"    console.log('Task list is full');",
+							"    console.log('currentAmountOfTasks: ' + currentAmountOfTasks + ' = ' + 'targetNumberOfTasks: ' + pm.environment.get('targetNumberOfTasks'));",
 							"    postman.setNextRequest('change task text')}"
 						],
 						"type": "text/javascript"
@@ -130,15 +145,17 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "a3b0ae78-2bad-4037-a331-da3cea4acf58",
+						"id": "488ca313-6cf6-4796-979d-0a32bade6e80",
 						"exec": [
-							""
+							"console.log('getting task list');\r",
+							"\r",
+							"pm.environment.set('targetNumberOfTasks', '105');"
 						],
 						"type": "text/javascript"
 					}
 				}
 			],
-			"id": "43a438c7-4c79-44d0-848b-a251515ced36",
+			"id": "f3b18cc7-611b-4239-9e62-c2ee1caf5146",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -155,7 +172,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{baseUrl}}/tasks?page=0&size=100",
+					"raw": "{{baseUrl}}/tasks?page=0&size=500",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -169,7 +186,7 @@
 						},
 						{
 							"key": "size",
-							"value": "100"
+							"value": "500"
 						}
 					]
 				}
@@ -182,7 +199,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "47eb0efe-9d81-4616-b88e-6e54e79610b8",
+						"id": "702e1346-b3c0-4eed-8b3d-231e811e1359",
 						"exec": [
 							"let jsonData = pm.response.json();",
 							"",
@@ -213,7 +230,7 @@
 					}
 				}
 			],
-			"id": "1e3dbd12-d8d7-4ca1-9a81-e38c05cb2eab",
+			"id": "cb1ea16f-39ba-48b1-ac4f-43ac5da6a52b",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -255,15 +272,15 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "39e2b88c-58d2-4c0a-b861-1e21219d08eb",
+						"id": "d2668b63-12a0-457b-ae15-7e2cfb120637",
 						"exec": [
-							""
+							"console.log('changing task text')"
 						],
 						"type": "text/javascript"
 					}
 				}
 			],
-			"id": "32e03ff6-baea-465b-a2e2-3a97c70939ce",
+			"id": "90e2a815-ff23-4a49-a2ad-a6a55b59e3d7",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -306,13 +323,13 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "a67eb558-5ffd-4c07-9a1c-9dc647995d0a",
+						"id": "768eb36e-600b-4e1b-9d4e-8693255f7c37",
 						"exec": [
 							"let arr = pm.environment.get('ids')",
 							"",
 							"arr.forEach((id)=>{",
 							"    pm.sendRequest(",
-							"        {url: `https://sqlverifier-50d286d70656.herokuapp.com/api/tasks/${id}`,",
+							"        {url: `${pm.environment.get('baseUrl')}/tasks/${id}`,",
 							"        method: 'DELETE',",
 							"        header:",
 							"        {'Authorization': 'Bearer ' + pm.environment.get('token'),",
@@ -323,6 +340,12 @@
 							"    });",
 							"})",
 							"",
+							"pm.environment.unset('ids');",
+							"pm.environment.unset('lastID');",
+							"pm.environment.unset('currentAmountOfTasks');",
+							"pm.environment.unset('targetNumberOfTasks');",
+							"",
+							"",
 							"",
 							"",
 							"",
@@ -332,7 +355,7 @@
 					}
 				}
 			],
-			"id": "3f9de192-3f64-45fa-8cd2-68c9041fce4b",
+			"id": "18ab2f21-1004-4cf3-9d1a-f46ec2d8c1a1",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -376,7 +399,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "a565044a-0e9e-4dc2-8e8f-13f3573a4c5d",
+				"id": "29c4306a-99c0-4770-b9b4-ae0a7e07659f",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -386,7 +409,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "006424dc-5fee-4e73-b440-1c4203f89177",
+				"id": "da81ad2a-108e-4cb3-a280-20d74e10aef6",
 				"type": "text/javascript",
 				"exec": [
 					""
