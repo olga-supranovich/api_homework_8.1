@@ -190,7 +190,7 @@
 							"    console.log('currentAmountOfTasks: ' + currentAmountOfTasks + ' >= ' + 'targetNumberOfTasks: ' + pm.environment.get('targetNumberOfTasks'));",
 							"    pm.environment.set('lastID', jsonData[currentAmountOfTasks-1].id);",
 							"    ids.push(pm.environment.get('lastID'))",
-							"    pm.environment.set(\"ids\", ids)",
+							"    //pm.environment.set(\"ids\", ids)",
 							"    postman.setNextRequest('change task text');",
 							"    ",
 							"    }",
@@ -207,7 +207,7 @@
 						"exec": [
 							"console.log('getting task list');\r",
 							"\r",
-							"pm.environment.set('targetNumberOfTasks', '105');"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -352,7 +352,10 @@
 					"script": {
 						"id": "d2668b63-12a0-457b-ae15-7e2cfb120637",
 						"exec": [
-							"console.log('changing task text')"
+							"console.log('changing task text')\r",
+							"\r",
+							"pm.collectionVariables.set('taskTextUpdated', 'new task text');\r",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -364,6 +367,8 @@
 						"exec": [
 							"let assert = require('chai').assert;\r",
 							"let jsonData = pm.response.json();\r",
+							"let taskTextUpdated = pm.collectionVariables.get('taskTextUpdated')\r",
+							"let lastID = pm.environment.get('lastID')\r",
 							"\r",
 							"pm.test(\"response is JSON\", function () {\r",
 							"   assert.exists(jsonData);\r",
@@ -383,6 +388,11 @@
 							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    assert.equal(pm.response.code, '200');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Updated text in response is correct\", function () {\r",
+							"    assert.equal(jsonData.id, lastID)\r",
+							"    assert.equal(jsonData.text, taskTextUpdated);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -411,7 +421,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"id\": \"{{lastID}}\",\n  \"text\": \"some new new text\"\n}"
+					"raw": "{\n  \"id\": \"{{lastID}}\",\n  \"text\": \"{{taskTextUpdated}}\"\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/tasks/{{lastID}}",
@@ -437,6 +447,8 @@
 							"let assert = require('chai').assert;",
 							"let arr = pm.environment.get('ids')",
 							"let jsonData = pm.response.json();",
+							"let taskTextUpdated = pm.collectionVariables.get('taskTextUpdated')",
+							"let lastID = pm.environment.get('lastID')",
 							"",
 							"pm.test(\"response is JSON\", function () {",
 							"    assert.exists(jsonData);",
@@ -458,28 +470,32 @@
 							"    assert.equal(pm.response.code, '200');",
 							"});",
 							"",
+							"pm.test(\"Updated text in response is correct\", function () {",
+							"    assert.equal(jsonData.id, lastID)",
+							"    assert.equal(jsonData.text, taskTextUpdated);",
+							"});",
 							"",
-							"if(arr){arr.forEach((id)=>{",
-							"    console.log('deleting task')",
-							"    pm.sendRequest(",
-							"        {url: `${pm.environment.get('baseUrl')}/tasks/${id}`,",
-							"        method: 'DELETE',",
-							"        header:",
-							"        {'Authorization': 'Bearer ' + pm.environment.get('token'),",
-							"        'accept': '*/*'}",
-							"        }",
-							"        , function (err, response) {",
-							"        console.log(response);",
-							"    });",
-							"})",
-							"}",
+							"// if(arr){arr.forEach((id)=>{",
+							"//     console.log('deleting task')",
+							"//     pm.sendRequest(",
+							"//         {url: `${pm.environment.get('baseUrl')}/tasks/${id}`,",
+							"//         method: 'DELETE',",
+							"//         header:",
+							"//         {'Authorization': 'Bearer ' + pm.environment.get('token'),",
+							"//         'accept': '*/*'}",
+							"//         }",
+							"//         , function (err, response) {",
+							"//         console.log(response);",
+							"//     });",
+							"// })",
+							"// }",
 							"",
-							"console.log('unsetting variables');",
-							"pm.environment.unset('token');",
-							"pm.environment.unset('ids');",
-							"pm.environment.unset('lastID');",
-							"pm.environment.unset('currentAmountOfTasks');",
-							"pm.environment.unset('targetNumberOfTasks');",
+							"// console.log('unsetting variables');",
+							"// pm.environment.unset('token');",
+							"// pm.environment.unset('ids');",
+							"// pm.environment.unset('lastID');",
+							"// pm.environment.unset('currentAmountOfTasks');",
+							"",
 							"",
 							"",
 							"",
@@ -551,6 +567,13 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"id": "1c2a312b-80b0-4676-a59c-f86a49cfe3d3",
+			"key": "taskTextUpdated",
+			"value": ""
 		}
 	]
 }
