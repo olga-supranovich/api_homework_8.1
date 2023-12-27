@@ -34,4 +34,4 @@ jobs:
         run: |
           curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
           postman login --with-api-key ${{secrets.API_KEY}}
-          postman collection run 'postman/collections/Create and change task iterations 8.2.json' -e 'verifier_cloud.postman_environment_8.json'
+          postman collection run 'postman/collections/Create and change task iterations 9.1.json' -e 'verifier_cloud.postman_environment_8.json'
