@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "06789067-8f7c-413d-b549-e7ceb94c6e09",
-		"name": "Create and change task iterations 8.2",
+		"_postman_id": "e5284d50-796d-45a0-abfa-09a51334599d",
+		"name": "Create and change task iterations 9.1",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_uid": "27247429-06789067-8f7c-413d-b549-e7ceb94c6e09"
+		"_uid": "27247429-e5284d50-796d-45a0-abfa-09a51334599d"
 	},
 	"item": [
 		{
@@ -12,7 +12,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "dfd5a33a-611d-47ca-9344-0675460f74a1",
+						"id": "4a3f172e-25f8-4bc1-9201-561b76661753",
 						"exec": [
 							"let assert = require('chai').assert;",
 							"let jsonData = pm.response.json();",
@@ -85,7 +85,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "4523f7bf-488e-4792-954e-ebef090a41ec",
+						"id": "24325fd9-a7f2-4636-894f-3aee585dde7e",
 						"exec": [
 							"console.log('login');\r",
 							"\r",
@@ -95,7 +95,7 @@
 					}
 				}
 			],
-			"id": "e3ed5948-ddb2-47d7-81f7-8e67d5cdc78f",
+			"id": "a2fca911-5a6f-4d76-a07a-d073ab6fbe57",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -174,7 +174,7 @@
 			},
 			"response": [
 				{
-					"id": "a84f7ab5-5e7d-466c-ae54-b1c6f8955a23",
+					"id": "e8c218e4-6f1e-4057-bddf-58f6c02ab7bf",
 					"name": "login 200",
 					"originalRequest": {
 						"method": "POST",
@@ -269,7 +269,7 @@
 					"body": "{\"id_token\":\"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJvbGdhX3N1IiwiZXhwIjoxNzAzNTI1ODAxLCJhdXRoIjoiUk9MRV9BRE1JTiIsImlhdCI6MTcwMzQzOTQwMX0.jqDkiYXX2LGwcNf7asePF44BQqfCZlbg5gigAziWwFV7zta1lrdlVwf_rw4_H1Wgd872K5WIW1MEZwAbDoxlBg\"}"
 				},
 				{
-					"id": "be692345-9f5c-4bc9-b94e-500d2a10d883",
+					"id": "7d86ed32-88f6-49fa-9b85-ca5b2f4b4ef1",
 					"name": "login - no username 400",
 					"originalRequest": {
 						"method": "POST",
@@ -364,7 +364,7 @@
 					"body": "{\"error\":\"Username and password are required\"}"
 				},
 				{
-					"id": "0defe1c5-744e-4a8b-ac7f-0db526d3e000",
+					"id": "6d3f06a1-7701-4d35-a586-edd1bd20d92d",
 					"name": "login - no password 400",
 					"originalRequest": {
 						"method": "POST",
@@ -466,9 +466,16 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "79ee9909-c558-4c54-9763-5902e8f872a0",
+						"id": "aa1cffd8-5d0b-46ab-97bb-9cccc8ab91f4",
 						"exec": [
+							"let assert = require('chai').assert",
 							"let jsonData = pm.response.json();",
+							"let currentAmountOfTasks = jsonData.length;",
+							"const ids = pm.environment.get(\"ids\") || [];",
+							"console.log(currentAmountOfTasks)",
+							"",
+							"pm.environment.set('currentAmountOfTasks', currentAmountOfTasks)",
+							"pm.environment.set(\"ids\", ids)",
 							"",
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
@@ -507,6 +514,19 @@
 							"        pm.expect(task.id).to.be.a('number');",
 							"    });",
 							"});",
+							"",
+							"",
+							"if(currentAmountOfTasks < pm.environment.get('targetNumberOfTasks')) {",
+							"    console.log('Not enough tasks');",
+							"    console.log('currentAmountOfTasks: ' + currentAmountOfTasks + ' < ' + 'targetNumberOfTasks: ' + pm.environment.get('targetNumberOfTasks'));",
+							"    postman.setNextRequest('create a task')",
+							"} else {",
+							"    console.log('Task list is full');",
+							"    console.log('currentAmountOfTasks: ' + currentAmountOfTasks + ' >= ' + 'targetNumberOfTasks: ' + pm.environment.get('targetNumberOfTasks'));",
+							"    pm.environment.set('lastID', jsonData[currentAmountOfTasks-1].id);",
+							"    postman.setNextRequest('change task text');",
+							"    ",
+							"    }",
 							""
 						],
 						"type": "text/javascript"
@@ -515,7 +535,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "289e62c6-97aa-4318-a24d-33301a8f0ddc",
+						"id": "f97099cd-9d65-4356-a26d-d04efd8d2edd",
 						"exec": [
 							"console.log('getting task list');\r",
 							"\r",
@@ -525,7 +545,7 @@
 					}
 				}
 			],
-			"id": "63ffca08-2005-4438-999b-79e4ca41c5b3",
+			"id": "644df36e-9401-4553-90cc-592474715449",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -568,7 +588,7 @@
 			},
 			"response": [
 				{
-					"id": "165cc6c8-4368-4245-ad1c-5a6b110dd0dd",
+					"id": "7a602a0b-89e1-4536-a87a-6b62ffb796b4",
 					"name": "get tasks list 200",
 					"originalRequest": {
 						"method": "GET",
@@ -618,7 +638,7 @@
 					"body": "[\r\n    {\r\n        \"id\": 1001,\r\n        \"text\": \"ttest \",\r\n        \"answer\": \"answer\",\r\n        \"title\": \"test task\"\r\n    },\r\n    {\r\n        \"id\": 1002,\r\n        \"text\": \"12\",\r\n        \"answer\": \"12\",\r\n        \"title\": \"12\"\r\n    }\r\n]"
 				},
 				{
-					"id": "64c6fc6f-8ea5-432b-b417-999b40524cea",
+					"id": "b96b9d43-76cc-4084-b1aa-5bc106c7d453",
 					"name": "get tasks list 403",
 					"originalRequest": {
 						"method": "GET",
@@ -664,7 +684,7 @@
 					"body": "{\r\n    \"error\": \"Token not valid\"\r\n}"
 				},
 				{
-					"id": "f28f7bd3-4fc1-43c8-9d29-66c7bd156670",
+					"id": "0a6bee6a-1887-4940-b156-dd4947e4e62b",
 					"name": "get tasks list 401",
 					"originalRequest": {
 						"method": "GET",
@@ -717,7 +737,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "f2d0e24b-58f0-4352-8f9a-243b3448f93e",
+						"id": "ae8f0d94-31df-477d-88d2-c10232a33435",
 						"exec": [
 							"console.log('creating new task');",
 							"let assert = require('chai').assert;",
@@ -808,13 +828,16 @@
 							"pm.test('JSON schema for response is correct', () => {",
 							"  pm.response.to.have.jsonSchema (schema);",
 							"});",
+							"",
+							"",
+							"",
 							""
 						],
 						"type": "text/javascript"
 					}
 				}
 			],
-			"id": "a3de9de8-5ef4-4328-bc5a-0742fa0c7dcd",
+			"id": "e7da6c9d-1dfe-41df-9ddf-248e5fb9aca6",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -850,7 +873,7 @@
 			},
 			"response": [
 				{
-					"id": "61536392-d04c-4fe6-a782-5bc843d58c00",
+					"id": "46822d02-ae78-436c-a609-cb7e3e21b445",
 					"name": "create a task 201",
 					"originalRequest": {
 						"method": "POST",
@@ -905,7 +928,7 @@
 					"body": "{\n    \"id\": {{$randomInt}},\n    \"text\": \"some text\",\n    \"answer\": \"string\",\n    \"title\": \"string\"\n}"
 				},
 				{
-					"id": "cee6a397-3076-494f-9f92-b9a029d348c5",
+					"id": "6ad5cb5d-f2bc-42cd-869a-da4417ff6f19",
 					"name": "create a task - no title 400",
 					"originalRequest": {
 						"method": "POST",
@@ -960,7 +983,7 @@
 					"body": "{\n    \"error\": \"Required info is missing\"\n}"
 				},
 				{
-					"id": "454382bb-7f81-47a4-9d44-02887fdddd65",
+					"id": "7458149f-b732-484d-baf3-c1e5629a1ef6",
 					"name": "create a task no answer 400",
 					"originalRequest": {
 						"method": "POST",
@@ -1015,7 +1038,7 @@
 					"body": "{\n    \"error\": \"Required info is missing\"\n}"
 				},
 				{
-					"id": "519d1c09-dc9d-4530-bf8c-40541fd34e24",
+					"id": "2f5ba9b6-c14b-497f-a848-0f0df9ef1d91",
 					"name": "create a task - no text 400",
 					"originalRequest": {
 						"method": "POST",
@@ -1077,11 +1100,11 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "a277d280-2d2d-43f0-9d0c-6a889eada595",
+						"id": "00e31534-6b6b-4423-8e08-9faad62b09d2",
 						"exec": [
 							"console.log('changing task text')\r",
 							"\r",
-							"pm.collectionVariables.set('taskTextUpdated', 'new task text');\r",
+							"\r",
 							""
 						],
 						"type": "text/javascript"
@@ -1090,7 +1113,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "b146fb78-0379-4063-a9a2-93f597a9f62e",
+						"id": "a180fca4-1ea5-4094-be21-b20f87fccb2d",
 						"exec": [
 							"let assert = require('chai').assert;\r",
 							"let jsonData = pm.response.json();\r",
@@ -1139,7 +1162,6 @@
 							"\r",
 							"\r",
 							"pm.test(\"Title is a non-empty string\", function () {\r",
-							"    \r",
 							"    pm.expect(jsonData).to.be.an('object');\r",
 							"    pm.expect(jsonData.title).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Title should not be empty\");\r",
 							"});\r",
@@ -1187,7 +1209,7 @@
 					}
 				}
 			],
-			"id": "0b5c6568-b544-4a81-ad6e-2ffa367c3968",
+			"id": "de6252fc-2df7-4d0d-9418-bba8e131bd9d",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -1230,7 +1252,7 @@
 			},
 			"response": [
 				{
-					"id": "bd8b9db1-fb7e-49b3-a709-274a1254d5d6",
+					"id": "c778b916-daf5-49e7-8286-8da6b60b049d",
 					"name": "change task text 200",
 					"originalRequest": {
 						"method": "PATCH",
@@ -1286,7 +1308,7 @@
 					"body": "{\n    \"id\": {{$body 'id'}},\n    \"text\": \"update text\",\n    \"answer\": \"string\",\n    \"title\": \"string\"\n}"
 				},
 				{
-					"id": "5d8d5802-e73f-45e4-a498-fbfaa10080e5",
+					"id": "6ba6676f-4be7-4cc1-8b28-0bbdcab43cf6",
 					"name": "change task text - empty id 400",
 					"originalRequest": {
 						"method": "PATCH",
@@ -1342,7 +1364,7 @@
 					"body": "{\n    \"error\": \"Required info is missing\"\n}"
 				},
 				{
-					"id": "c9d53802-10f2-433a-9661-3c8ba84f6495",
+					"id": "ae63e5cb-2a58-40ef-be9c-c80d51019599",
 					"name": "change task text - empty text 400",
 					"originalRequest": {
 						"method": "PATCH",
@@ -1405,7 +1427,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "60f77691-a764-4847-9b63-3827613e2dfa",
+						"id": "6f6a8430-bb20-475e-960b-1b2170043dc8",
 						"exec": [
 							"let assert = require('chai').assert;",
 							"let arr = pm.environment.get('ids')",
@@ -1485,13 +1507,13 @@
 							"pm.environment.unset('ids');",
 							"pm.environment.unset('lastID');",
 							"pm.environment.unset('currentAmountOfTasks');",
-							"pm.collectionVariables.unset('taskTextUpdated'); "
+							""
 						],
 						"type": "text/javascript"
 					}
 				}
 			],
-			"id": "60ca03e7-d74a-4cd6-a4a1-6bd2ec175b60",
+			"id": "605d1e16-d9a2-4753-a45c-d1c7f69a9ac5",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -1526,7 +1548,7 @@
 			},
 			"response": [
 				{
-					"id": "e9dc14f6-b090-4b3c-9dd7-8c23b8f365fd",
+					"id": "3afaf6bf-c412-4e6c-9c5e-4d4cd4615436",
 					"name": "get task data  200",
 					"originalRequest": {
 						"method": "GET",
@@ -1567,7 +1589,7 @@
 					"body": "{\r\n    \"id\": {{$pathSegments '1'}},\r\n    \"text\": \"update text\",\r\n    \"answer\": \"string\",\r\n    \"title\": \"string\"\r\n}"
 				},
 				{
-					"id": "bbc07379-8204-4207-9c62-f3dda24ea771",
+					"id": "471a021c-14c6-422c-b859-36a9e00a8766",
 					"name": "get task data 403",
 					"originalRequest": {
 						"method": "GET",
@@ -1608,7 +1630,7 @@
 					"body": "{\r\n    \"error\": \"Token not valid\"\r\n}"
 				},
 				{
-					"id": "0c4aa888-6e40-4d54-839b-2236514ab4f0",
+					"id": "c25e89a2-691f-4841-b750-39bf9a54b3de",
 					"name": "get task data 401",
 					"originalRequest": {
 						"method": "GET",
@@ -1665,7 +1687,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "bc1e6e3f-0817-4ca3-b812-5f9ec50e5dcb",
+				"id": "69019b6d-aa7c-4315-a423-d31bd030ce67",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -1675,7 +1697,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "77d4a462-fbcf-4e62-84b4-a74735a3021f",
+				"id": "c3fc184c-f312-4509-83a1-85f6b6fd91c2",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -1685,9 +1707,10 @@
 	],
 	"variable": [
 		{
-			"id": "47d86917-22e4-4e70-a617-0080d103196d",
+			"id": "4d74f055-06a4-4f73-a8ad-91d4529073f7",
 			"key": "taskTextUpdated",
-			"value": ""
+			"value": "update text",
+			"type": "string"
 		}
 	]
 }
